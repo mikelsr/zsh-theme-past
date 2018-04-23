@@ -1,4 +1,8 @@
 # Past Zsh theme
+# Fork from https://github.com/pastleo/zsh-theme-past, who has amazing themes
+# for both zsh and fish
+
+# TODO: visible git and virtualenv
 
 _PROMPT_CACHE_FILE="$HOME/.zsh_prompt_cache"
 _PROMPT_CACHE_TIMEOUT="40"
@@ -66,12 +70,7 @@ function _print_title
 function _print_prompt
 {
   eval $(cat "$_PROMPT_CACHE_FILE") # read cache value
-  local prompt="%{\\033[48;5;0;38;5;${time_color_code}m%} %c %{$reset_color%(0?.$fg[black].$fg[white])%} > %{$reset_color$(_print_title)%}"
-  if [[ $(( SECONDS - last_seconds )) -ge $_PROMPT_CACHE_TIMEOUT ]]; then
-    prompt="%{$(_print_prompt_first_line $time_color_code 0)%}${prompt}"
-    _gen_cache_file
-  fi
-
+  local prompt="$PVENV%{\\033[48;5;0;38;5;${time_color_code}m%} %c %{\\033[38;5;0;48;5;${time_color_code}m%} %D{%H:%M} %{$reset_color%(0?.$fg[${time_color_code}].$fg[white])%} > %{$reset_color$(_print_title)%}"
   echo $prompt
 }
 
@@ -85,4 +84,3 @@ ZSH_THEME_GIT_PROMPT_CLEAN=" %{$fg_bold[green]%}✔"
 ZSH_THEME_GIT_PROMPT_DIRTY=" %{$fg_bold[yellow]%}✗"
 ZSH_THEME_GIT_PROMPT_PREFIX="%{$bg[cyan]%}${fg[black]} "
 ZSH_THEME_GIT_PROMPT_SUFFIX=" %{$reset_color%}"
-
