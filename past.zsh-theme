@@ -1,8 +1,9 @@
+# *- mode: zsh -*-
+# vi: set ft=zsh :
+
 # Past Zsh theme
 # Fork from https://github.com/pastleo/zsh-theme-past, who has amazing themes
 # for both zsh and fish
-
-# TODO: visible git and virtualenv
 
 _PROMPT_CACHE_FILE="$HOME/.zsh_prompt_cache"
 _PROMPT_CACHE_TIMEOUT="40"
@@ -51,36 +52,32 @@ function _gen_cache_file
   echo "last_seconds=$last_seconds time_color_code=$time_color_code" > "$_PROMPT_CACHE_FILE"
 }
 
-function _print_prompt_first_line
-{
-  local time_color_code=$1
-  local line2_first_color_code=$2
-  echo "%U$fg[black]%(!.$bg[red].$bg[green]) %n $bg[blue] %M ${reset_color}$(git_prompt_info)\\033[38;5;0;48;5;${time_color_code}m %D{%H:%M} $reset_color"$'\n'"%(!.$fg[red].$fg[green])\\033[48;5;${line2_first_color_code}m◤${reset_color}"
-}
-
-function _print_title
-{
-  if [ -n "$TMUX" ]; then
-    echo "\033k[%c]\033\\"
-  else
-   echo "\033]0;[%c]\007"
-  fi
-}
-
 function _print_prompt
 {
+  if [ "x$VIRTUAL_ENV" = "x" ]; then
+    PVENV=""
+  else
+    PVENV="| venv: ${VIRTUAL_ENV##*/}"
+  fi
   eval $(cat "$_PROMPT_CACHE_FILE") # read cache value
-  local prompt="$PVENV%{\\033[48;5;0;38;5;${time_color_code}m%} %c %{\\033[38;5;0;48;5;${time_color_code}m%} %D{%H:%M} %{$reset_color%(0?.$fg[${time_color_code}].$fg[white])%} > %{$reset_color$(_print_title)%}"
+  local prompt="%{\\033[48;5;0;38;5;${time_color_code}m%}\
+ %c $(git_prompt_info)%{\\033[48;5;0;38;5;${time_color_code}m%}${PVENV}\
+%{\\033[38;5;0;48;5;${time_color_code}m%}\
+ %D{%H:%M} %{$reset_color%(0?.$fg[${time_color_code}].$fg[white])%}\
+ %(!.#.>)"
   echo $prompt
 }
 
-# init
-_gen_cache_file init
+# secondary prompt
+if [ $UID -eq 0 ]; then NCOLOR="red"; else NCOLOR="green"; fi
+local return_code="%(?..%{$fg[red]%}%? ↵%{$reset_color%})"
 
 # output
 PROMPT='$(_print_prompt)'
+PROMPT2="%{$fg[red]%}\ %{$reset_color%}"
+RPS1="${return_code}"
 
-ZSH_THEME_GIT_PROMPT_CLEAN=" %{$fg_bold[green]%}✔"
-ZSH_THEME_GIT_PROMPT_DIRTY=" %{$fg_bold[yellow]%}✗"
-ZSH_THEME_GIT_PROMPT_PREFIX="%{$bg[cyan]%}${fg[black]} "
+ZSH_THEME_GIT_PROMPT_CLEAN=""
+ZSH_THEME_GIT_PROMPT_DIRTY="%{$fg_bold[yellow]%}*%{$fg[%{$time_color_code}]%}"
+ZSH_THEME_GIT_PROMPT_PREFIX="| git: "
 ZSH_THEME_GIT_PROMPT_SUFFIX=" %{$reset_color%}"
