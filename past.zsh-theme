@@ -66,7 +66,7 @@ function _print_prompt
  %c $(git_prompt_info)%{\\033[48;5;0;38;5;${time_color_code}m%}${PVENV}\
 %{\\033[38;5;0;48;5;${time_color_code}m%}\
  %D{%H:%M} %{$reset_color%(0?.$fg[${time_color_code}].$fg[white])%}\
- %(!.#.>)"
+ %(!.#.>) "
 	echo $prompt
 }
 
