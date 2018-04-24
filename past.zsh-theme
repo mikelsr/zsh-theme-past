@@ -59,7 +59,7 @@ function _print_prompt
 	if [ "x$VIRTUAL_ENV" = "x" ]; then
 		PVENV=""
 	else
-		PVENV="| venv: ${VIRTUAL_ENV##*/}"
+		PVENV="| venv: ${VIRTUAL_ENV##*/} "
 	fi
 	eval $(cat "$_PROMPT_CACHE_FILE") # read cache value
 	local prompt="%{\\033[48;5;0;38;5;${time_color_code}m%}\
