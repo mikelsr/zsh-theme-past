@@ -53,6 +53,9 @@ function _gen_cache_file
 
 function _print_prompt
 {
+	if [[ $(( SECONDS - last_seconds )) -ge $_PROMPT_CACHE_TIMEOUT ]]; then
+		_gen_cache_file
+	fi
 	if [ "x$VIRTUAL_ENV" = "x" ]; then
 		PVENV=""
 	else
@@ -66,6 +69,8 @@ function _print_prompt
  %(!.#.>)"
 	echo $prompt
 }
+
+_gen_cache_file init
 
 # secondary prompt
 if [ $UID -eq 0 ]; then NCOLOR="red"; else NCOLOR="green"; fi
